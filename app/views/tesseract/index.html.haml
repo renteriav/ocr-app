@@ -1,3 +1,4 @@
-=form_tag tesseract_run_path do
+=form_tag({action: :run}, multipart: true) do
   =file_field_tag 'image'
+  =text_field_tag 'url'
   =submit_tag

@@ -19,7 +19,9 @@ gem 'thin'
 gem 'annotate'
 gem 'devise'
 gem 'fog'
+gem "rmagick"
 gem 'mini_magick'
+gem 'rtesseract'
 gem 'carrierwave'
 gem 'utf8-cleaner'
 gem 'rails_12factor', group: :production

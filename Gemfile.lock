@@ -270,6 +270,9 @@ GEM
     rake (10.4.2)
     responders (2.1.0)
       railties (>= 4.2.0, < 5)
+    rmagick (2.15.4)
+    rtesseract (1.3.0)
+      nokogiri
     ruby_parser (3.7.1)
       sexp_processor (~> 4.1)
     sass (3.4.18)
@@ -334,6 +337,8 @@ DEPENDENCIES
   pg
   rails (= 4.2.3)
   rails_12factor
+  rmagick
+  rtesseract
   sass-rails
   spring
   thin
