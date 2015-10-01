@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.2.0'
+ruby '2.2.2'
 gem 'rails', '4.2.3'
 gem 'bootstrap-sass', '3.3.0.0'
 gem 'haml-rails'
@@ -21,14 +21,12 @@ gem 'devise'
 gem 'fog'
 gem 'mini_magick'
 gem 'carrierwave'
-
-gem 'better_errors',group: [:development, :test]
-gem 'web-console', '~> 2.0',group: [:development, :test]
-gem "binding_of_caller",group: [:development, :test]
-gem 'rails_12factor', group: :production
 gem 'utf8-cleaner'
+gem 'rails_12factor', group: :production
 
 group :development, :test do
+  gem 'better_errors'
+  gem "binding_of_caller"
   gem 'byebug'
   gem 'web-console', '~> 2.0'
   gem 'spring'
