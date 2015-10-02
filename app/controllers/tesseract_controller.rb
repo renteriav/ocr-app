@@ -9,14 +9,14 @@ class TesseractController < ApplicationController
     #jpg = Base64.decode64(params[:image])
     
     puts "Creating directory"
-    %x(mkdir tessdir)
+    %x(mkdir public/tessdir)
 
     puts "Saving image"
     #file = File.open("tessdir/sample.jpg",'wb')
   	#file.write jpg
     
     uploaded_io = params[:image]
-    File.open(Rails.root.join('tessdir', uploaded_io.original_filename), 'wb') do |file|
+    File.open(Rails.root.join('public', 'tessdir', uploaded_io.original_filename), 'wb') do |file|
     file.write(uploaded_io.read)
   end
 	  
@@ -29,9 +29,9 @@ class TesseractController < ApplicationController
     
     puts "removing tessdir"
     puts "#{Rails.root.join('public', 'uploads', uploaded_io.original_filename).to_s}"
-    image = RTesseract.new(Rails.root.join('tessdir', uploaded_io.original_filename).to_s)
+    image = RTesseract.new(Rails.root.join('public','tessdir', uploaded_io.original_filename).to_s)
     contents = image.to_s
-    %x(rm -Rf tessdir)
+    %x(rm -Rf public/tessdir)
     render text: contents
   end
 end
