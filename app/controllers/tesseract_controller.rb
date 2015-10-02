@@ -27,9 +27,11 @@ class TesseractController < ApplicationController
     #file = File.open("tessdir/out.txt", "rb")
     #contents = file.read
     
-    puts "removing tessdir"
-    puts "#{Rails.root.join('public', 'uploads', uploaded_io.original_filename).to_s}"
-    image = RTesseract.new(Rails.root.join('public','tessdir', uploaded_io.original_filename).to_s)
+    puts "#{params[:image].path}"
+    
+    #puts "#{Rails.root.join('public', 'uploads', uploaded_io.original_filename).to_s}"
+    #image = RTesseract.new(Rails.root.join('public','tessdir', uploaded_io.original_filename).to_s)
+    image = RTesseract.new(params[:image].path)
     contents = image.to_s
     %x(rm -Rf public/tessdir)
     render text: contents
