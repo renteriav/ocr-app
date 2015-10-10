@@ -12,5 +12,10 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require jquery-ui
+//= require dropzone
+//= require jquery-fileupload
+//= require jquery-fileupload/basic-plus
+//= require bootstrap
 //= require turbolinks
 //= require_tree .

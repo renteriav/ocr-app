@@ -2,7 +2,7 @@ development:
   adapter: postgresql
   #host: localhost
   encoding: unicode
-  database: quicktalk_development
+  database: ocr_development
   pool: 5
   username: franciscorenteria
   password:
@@ -11,7 +11,7 @@ test:
   adapter: postgresql
   host: localhost
   encoding: unicode
-  database: quicktalk_test
+  database: ocr_test
   pool: 5
   username: franciscorenteria
   password:

@@ -1,0 +1,13 @@
+%p#notice= notice
+
+%p
+  %b Name:
+  - if @vendor
+    =@vendor.name
+%p
+  %b Email:
+  = @vendor.email_address   
+
+= #link_to 'Edit', edit_vendor_path(@vendor)
+\|
+= link_to 'Back', vendors_path

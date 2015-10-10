@@ -1,0 +1,59 @@
+<div class="container">
+  <div id="actions" class="row">
+    <div class="col-lg-7">
+      <span class="btn btn-success fileinput-button dz-clickable">
+        <i class="glyphicon glyphicon-plus"></i>
+        <span>Add files...</span>
+      </span>
+      <button class="btn btn-primary start" type="submit">
+        <i class="glyphicon glyphicon-upload"></i>
+        <span>Start upload</span>
+      </button>
+      <button class="btn btn-warning cancel" type="reset">
+        <i class="glyphicon glyphicon-ban-circle"></i>
+        <span>Cancel upload</span>
+      </button>
+    </div>
+    <div class="col-lg-5">
+        <div id="total-progress" class="progress progress-striped active" aria-valuenow="0" aria-valuemax="100" aria-valuemin="0" role="progressbar">
+          <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress>
+          </div>
+        </div>
+    </div> 
+  </div>
+  <div class="table table-striped" class="files" id="previews">
+
+    <div id="template" class="file-row row">
+      <div class='col-sm-6'>
+      <!-- This is used as the file preview template -->
+      <div>
+          <span class="preview"><img data-dz-thumbnail /></span>
+      </div>
+      <div>
+          <p class="name" data-dz-name></p>
+          <strong class="error text-danger" data-dz-errormessage></strong>
+      </div>
+      <div>
+          <p class="size" data-dz-size></p>
+          <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
+          </div>
+      </div>
+    </div>
+      <div class="col-sm-6">
+        <button class="btn btn-primary start">
+            <i class="glyphicon glyphicon-upload"></i>
+            <span>Start</span>
+        </button>
+        <button data-dz-remove class="btn btn-warning cancel">
+            <i class="glyphicon glyphicon-ban-circle"></i>
+            <span>Cancel</span>
+        </button>
+        <button data-dz-remove class="btn btn-danger delete">
+          <i class="glyphicon glyphicon-trash"></i>
+          <span>Delete</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

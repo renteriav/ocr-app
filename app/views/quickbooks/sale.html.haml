@@ -1,0 +1,12 @@
+.row
+  .col-sm-12
+    =form_tag create_sale_path( realm_id: @realm_id), :multipart => true  do
+      =select_tag "customer", options_for_select(@customers)
+      =select_tag "item", options_for_select(@items)
+      =text_field_tag "amount", nil, placeholder: "amount"
+      =select_tag "method",
+      options_for_select(@payment_methods)
+      =text_field_tag "description", nil, placeholder: "desc"
+      =text_field_tag "date", nil, placeholder: "date"
+      =file_field_tag "file"
+      =submit_tag "submit"

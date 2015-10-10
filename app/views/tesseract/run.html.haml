@@ -1,0 +1,49 @@
+%p
+  %strong
+    Date:
+  ="#{@date.strftime('%Y-%m-%d')}"
+%p
+  %strong
+    Order #:
+  ="#{@order_number}"
+%p
+  %strong
+    Grand Total:
+  ="$ #{@total}"
+%table.table.table-striped
+  %tr
+    %th Quantity
+    %th Product
+    %th Description
+    %th Seller
+    %th Condition
+    %th Price
+  -@items.each do |item|
+    %tr
+      %td
+        ="#{item[:quantity]}"
+      %td
+        ="#{item[:product]}"
+      %td
+        ="#{item[:description]}"
+      %td
+        ="#{item[:seller]}"
+      %td
+        ="#{item[:condition]}"
+      %td
+        ="$#{item[:amount]}"
+
+%p
+  -line_n=0
+  -@lines.each do |line|
+    %strong
+      =line_n+=1
+      &nbsp;
+    =line
+    %br
+%p
+  %strong
+    /Result:
+  =#"#{@result}"
+
+  

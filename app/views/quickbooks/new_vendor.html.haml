@@ -1,0 +1,5 @@
+.row
+  .col-sm-12
+    =form_tag create_vendor_path( realm_id: @realm_id) do
+      =text_field_tag "name", nil, placeholder: "name"
+      =submit_tag "submit"

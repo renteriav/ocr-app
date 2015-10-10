@@ -8,7 +8,8 @@ gem 'sass-rails'
 gem "font-awesome-rails"
 gem 'uglifier', '>= 1.3.0'
 gem 'jquery-rails'
-gem "jquery-fileupload-rails", '0.4.1'
+gem "jquery-fileupload-rails"#, '0.4.1'
+gem 'dropzonejs-rails'
 gem 'jquery-ui-rails'
 gem 'jquery-ui-themes'
 gem 'turbolinks'
@@ -19,9 +20,11 @@ gem 'thin'
 gem 'annotate'
 gem 'devise'
 gem 'fog'
+gem 'quickbooks-ruby', '0.2.3', :git => "https://github.com/renteriav/qb-ruby-2"
 gem "rmagick"
 gem 'mini_magick'
 gem 'rtesseract'
+gem 'tesseract-ocr'
 gem 'carrierwave'
 gem 'utf8-cleaner'
 gem 'rails_12factor', group: :production

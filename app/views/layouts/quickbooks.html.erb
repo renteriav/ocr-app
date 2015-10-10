@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>QuickTalk</title>
+    <%= stylesheet_link_tag params[:controller] if ::Rails.application.assets.find_asset("#{params[:controller]}.css") %>
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+    <!-- jQuery
+    -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <!-- jQuery fallback
+    -->
+    <script>
+      
+      if (typeof jQuery === 'undefined') {
+        document.write(unescape('%3Cscript%20src%3D%22/assets/jquery.js%22%3E%3C/script%3E'));
+        document.write(unescape('%3Cscript%20src%3D%22/assets/jquery-ui.js%22%3E%3C/script%3E'));
+      }
+
+    </script>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    <%= csrf_meta_tags %>
+  </head>
+  <body class="qt-blue">
+    <div id="container" style="max-width:500px; margin:auto;">
+
+      <%= yield %>
+
+      <script type="text/javascript" src="https://appcenter.intuit.com/Content/IA/intuit.ipp.anywhere.js"></script>
+
+      <script>
+          intuit.ipp.anywhere.setup({menuProxy: '/path/to/blue-dot', grantUrl: '<%= quickbooks_authenticate_url %>'});
+      </script>
+      <%= javascript_include_tag params[:controller] if ::Rails.application.assets.find_asset("#{params[:controller]}.js") %>
+      <%= yield :javascript %>
+      <%- #debug(params) if Rails.env.development? %>
+      </div>
+    </body>
+</html>
