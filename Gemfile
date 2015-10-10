@@ -24,7 +24,7 @@ gem 'quickbooks-ruby', '0.2.3', :git => "https://github.com/renteriav/qb-ruby-2"
 gem "rmagick"
 gem 'mini_magick'
 gem 'rtesseract'
-gem 'tesseract-ocr'
+#gem 'tesseract-ocr'
 gem 'carrierwave'
 gem 'utf8-cleaner'
 gem 'rails_12factor', group: :production
