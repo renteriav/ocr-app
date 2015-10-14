@@ -10,6 +10,23 @@
   %strong
     Grand Total:
   ="$ #{@total}"
+%p
+  %strong
+    Shipping and Handling:
+  ="$#{@total_shipping}"
+%p
+  %strong
+    Super Saver Discount:
+  ="-$#{@total_saver}"
+%p
+  %strong
+    Tax:
+  ="$#{@total_tax}"
+%p
+  %strong
+    Rewards Points:
+  ="-$#{@total_rewards}"
+  
 %table.table.table-striped
   %tr
     %th Quantity
