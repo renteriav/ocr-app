@@ -5,12 +5,14 @@ class TesseractController < ApplicationController
   #require 'tesseract'
   require 'RMagick'
   def index
+    @document = Document.new
   end
   
   def uploader
   end
   
   def run
+    @document = current_user.documents.build(image: params[:image], user_id: current_user.id)
     file_name = random_file_name
     cordinate_x = params[:x_cordinate]
     cordinate_y = params[:y_cordinate]
@@ -24,6 +26,14 @@ class TesseractController < ApplicationController
     #  e.language  = :eng
     #  e.blacklist = '|'
     #}
+    
+    #respond_to do |format|
+      if @document.save
+        render_response(true, "Upload succesfull", 200)
+      else 
+        render_response(false, "something went wrong", 500)
+      end
+      #end
     
     (brightness < 220) ? brightness_increase = ((220 - brightness).to_f / 130) : brightness_increase = 0
     increased_brightness = 1 + brightness_increase
@@ -43,12 +53,12 @@ class TesseractController < ApplicationController
     if image.size > 1
       counter = 0
       while counter < image.size do 
-        page = RTesseract.read("public/uploads/#{file_name}-#{counter}.jpg") do |img|
+        page = RTesseract.read("public/uploads/tmp/#{file_name}-#{counter}.jpg") do |img|
           img = img.quantize(256,Magick::GRAYColorspace)
           img = img.modulate(1.3)
           img.write("public/uploads/#{file_name}-#{counter}.jpg")
           #lines = e.lines_for("public/uploads/#{file_name}-#{counter}.jpg")
-          text = RTesseract.new("public/uploads/#{file_name}-#{counter}.jpg", {psm: 6})
+          text = RTesseract.new("public/uploads/tmp/#{file_name}-#{counter}.jpg", {psm: 6})
           text = text.to_s
           lines = text.split("\n")
           lines.each do |line|
@@ -59,12 +69,12 @@ class TesseractController < ApplicationController
       end
       puts "#{@lines}"
     else
-      page = RTesseract.read("public/uploads/#{file_name}.jpg") do |img|
+      page = RTesseract.read("public/uploads/tmp/#{file_name}.jpg") do |img|
         img = img.quantize(256,Magick::GRAYColorspace)
         img = img.modulate(1.3)
         img.write("public/uploads/#{file_name}.jpg")
         #lines = e.lines_for("public/uploads/#{file_name}.jpg")
-        text = RTesseract.new("public/uploads/#{file_name}.jpg", {psm: 6})
+        text = RTesseract.new("public/uploads/tmp/#{file_name}.jpg", {psm: 6})
         text = text.to_s
         lines = text.split("\n")
         lines.each do |line|
@@ -309,8 +319,8 @@ class TesseractController < ApplicationController
     elsif digital_date_line
       @date = Date.parse(digital_date_line.split(':').last.strip)
     end
-    create_expense(@date, 78, 42, "Amazon Purchase", @order_number, @total, @items)
-    #render_response(true, "Upload succesfull", 200)
+    #create_expense(@date, 78, 42, "Amazon Purchase", @order_number, @total, @items)
+    render_response(true, "Upload succesfull", 200)
   end
   
   def create_item(name)
@@ -358,6 +368,10 @@ class TesseractController < ApplicationController
   end
   
   private
+  
+  def document_params
+    params.require(:document).permit(:user_id, :image)
+  end  
   
   def get_items
     @qbo_client = current_user.qbo_client
