@@ -319,8 +319,8 @@ class TesseractController < ApplicationController
     elsif digital_date_line
       @date = Date.parse(digital_date_line.split(':').last.strip)
     end
-    #create_expense(@date, 78, 42, "Amazon Purchase", @order_number, @total, @items)
-    #render_response(true, "Upload succesfull", 200)
+    create_expense(@date, 78, 42, "Amazon Purchase", @order_number, @total, @items)
+    render_response(true, "Upload succesfull", 200)
   end
   
   def create_item(name)
