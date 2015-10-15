@@ -1,4 +1,5 @@
 class TesseractController < ApplicationController
+  require 'fileutils'
   skip_before_filter :verify_authenticity_token
   before_action :authenticate_user!
   before_action :set_qb_service, only: [:create_purchase, :upload]
@@ -57,13 +58,13 @@ class TesseractController < ApplicationController
           img = img.quantize(256,Magick::GRAYColorspace)
           img = img.modulate(1.3)
           img.write("#{file_name}-#{counter}.jpg")
-          #lines = e.lines_for("public/uploads/#{file_name}-#{counter}.jpg")
           text = RTesseract.new("#{file_name}-#{counter}.jpg", {psm: 6})
           text = text.to_s
           lines = text.split("\n")
           lines.each do |line|
             @lines.push(line) unless line == "" 
           end
+          FileUtils.rm "#{file_name}-#{counter}.jpg"
           counter += 1
         end
       end
@@ -72,7 +73,7 @@ class TesseractController < ApplicationController
       page = RTesseract.read("#{file_name}.jpg") do |img|
         img = img.quantize(256,Magick::GRAYColorspace)
         img = img.modulate(1.3)
-        img.write("public/uploads/#{file_name}.jpg")
+        img.write("#{file_name}.jpg")
         #lines = e.lines_for("public/uploads/#{file_name}.jpg")
         text = RTesseract.new("#{file_name}.jpg", {psm: 6})
         text = text.to_s
@@ -80,6 +81,7 @@ class TesseractController < ApplicationController
         lines.each do |line|
           @lines.push(line) unless line == "" 
         end
+        FileUtils.rm "#{file_name}.jpg"
       end
       
     end
@@ -319,7 +321,7 @@ class TesseractController < ApplicationController
     elsif digital_date_line
       @date = Date.parse(digital_date_line.split(':').last.strip)
     end
-    create_expense(@date, 78, 42, "Amazon Purchase", @order_number, @total, @items)
+    #create_expense(@date, 78, 42, "Amazon Purchase", @order_number, @total, @items)
     #render_response(true, "Upload succesfull", 200)
   end
   
