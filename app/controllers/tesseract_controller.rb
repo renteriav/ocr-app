@@ -28,11 +28,11 @@ class TesseractController < ApplicationController
     #}
     
     #respond_to do |format|
-      if @document.save
-        render_response(true, "Upload succesfull", 200)
-      else 
-        render_response(false, "something went wrong", 500)
-      end
+      #if @document.save
+        #render_response(true, "Upload succesfull", 200)
+        #else 
+        #render_response(false, "something went wrong", 500)
+        #end
       #end
     
     (brightness < 220) ? brightness_increase = ((220 - brightness).to_f / 130) : brightness_increase = 0

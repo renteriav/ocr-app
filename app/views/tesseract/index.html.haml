@@ -3,12 +3,12 @@
 .container
   .row
     .col-sm-10.col-sm-offset-1
-      =form_for @document, url: tesseract_run_path(document: @document), via: :post, authenticity_token: true, html: {:multipart => true, :remote => true, class: "dropzone dz-square", id: "dropzone-form"} do |f|
-        =#form_tag({action: :run}, multipart: true, class: "dropzone dz-square", id: "dropzone-form") do
+      =#form_for @document, url: tesseract_run_path(document: @document), via: :post, authenticity_token: true, html: {:multipart => true, :remote => true, class: "dropzon dz-square", id: "dropzone-form"} do |f|
+      =form_tag({action: :run}, multipart: true, class: "dropzon dz-square", id: "dropzone-form") do
         =#hidden_field_tag 'brightness'
         .form-group
-          =f.file_field 'image', style: "display: none;"
-          =#file_field_tag 'image'
+          =#f.file_field 'image', style: "display: none;"
+          =file_field_tag 'image'
         .form-group
           =#text_field_tag 'x_cordinate'
         .form-group
@@ -18,4 +18,4 @@
         .form-group
           =#text_field_tag 'height'
         .form-group
-          =#submit_tag "Get Text"
+          =submit_tag "Get Text"
