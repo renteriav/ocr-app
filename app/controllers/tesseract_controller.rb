@@ -48,17 +48,17 @@ class TesseractController < ApplicationController
       self.density = 250
     end
     
-    image.write("public/uploads/#{file_name}.jpg")
+    image.write("#{file_name}.jpg")
     @lines = Array.new
     if image.size > 1
       counter = 0
       while counter < image.size do 
-        page = RTesseract.read("public/uploads/tmp/#{file_name}-#{counter}.jpg") do |img|
+        page = RTesseract.read("#{file_name}-#{counter}.jpg") do |img|
           img = img.quantize(256,Magick::GRAYColorspace)
           img = img.modulate(1.3)
-          img.write("public/uploads/#{file_name}-#{counter}.jpg")
+          img.write("#{file_name}-#{counter}.jpg")
           #lines = e.lines_for("public/uploads/#{file_name}-#{counter}.jpg")
-          text = RTesseract.new("public/uploads/tmp/#{file_name}-#{counter}.jpg", {psm: 6})
+          text = RTesseract.new("#{file_name}-#{counter}.jpg", {psm: 6})
           text = text.to_s
           lines = text.split("\n")
           lines.each do |line|
@@ -69,12 +69,12 @@ class TesseractController < ApplicationController
       end
       puts "#{@lines}"
     else
-      page = RTesseract.read("public/uploads/tmp/#{file_name}.jpg") do |img|
+      page = RTesseract.read("#{file_name}.jpg") do |img|
         img = img.quantize(256,Magick::GRAYColorspace)
         img = img.modulate(1.3)
         img.write("public/uploads/#{file_name}.jpg")
         #lines = e.lines_for("public/uploads/#{file_name}.jpg")
-        text = RTesseract.new("public/uploads/tmp/#{file_name}.jpg", {psm: 6})
+        text = RTesseract.new("#{file_name}.jpg", {psm: 6})
         text = text.to_s
         lines = text.split("\n")
         lines.each do |line|
