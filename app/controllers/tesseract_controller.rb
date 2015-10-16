@@ -13,6 +13,8 @@ class TesseractController < ApplicationController
   end
   
   def run
+    puts "Memory 1st pass:"
+    puts `ps -o rss= -p #{$$}`  
     @document = current_user.documents.build(image: params[:image], user_id: current_user.id)
     file_name = random_file_name
     cordinate_x = params[:x_cordinate]
@@ -20,84 +22,80 @@ class TesseractController < ApplicationController
     width = params[:width]
     height = params[:height]
     brightness = params[:brightness].to_i
-    #%x(mkdir public/tessdir)
-    
-    
-    #e = Tesseract::Engine.new {|e|
-    #  e.language  = :eng
-    #  e.blacklist = '|'
-    #}
-    
-    #respond_to do |format|
-      #if @document.save
-        #render_response(true, "Upload succesfull", 200)
-        #else 
-        #render_response(false, "something went wrong", 500)
-        #end
-      #end
     
     (brightness < 220) ? brightness_increase = ((220 - brightness).to_f / 130) : brightness_increase = 0
     increased_brightness = 1 + brightness_increase
-    
-    puts "#{brightness}"
-    puts "#{increased_brightness}"
+
     puts "#{params[:image].path}"
    
     image = Magick::ImageList.new(params[:image].path) do
-      #self.format = 'jpg'
       self.quality = 100
       self.density = 250
     end
     
+    puts "Memory 2nd pass:"
+    puts `ps -o rss= -p #{$$}`  
+    
     image.write("#{file_name}.jpg")
+    
+    puts "Memory 3rd pass:"
+    puts `ps -o rss= -p #{$$}`
     @lines = Array.new
     if image.size > 1
       counter = 0
       while counter < image.size do 
-        page = RTesseract.read("#{file_name}-#{counter}.jpg") do |img|
-          img = img.quantize(256,Magick::GRAYColorspace)
-          img = img.modulate(1.3)
-          img.write("#{file_name}-#{counter}.jpg")
+        #page = RTesseract.read("#{file_name}-#{counter}.jpg") do |img|
+          #img = img.quantize(256,Magick::GRAYColorspace)
+          #img = img.modulate(1.3)
+          #img.write("#{file_name}-#{counter}.jpg")
+          puts "Memory 4th pass:"
+          puts `ps -o rss= -p #{$$}`
           text = RTesseract.new("#{file_name}-#{counter}.jpg", {psm: 6})
           text = text.to_s
           lines = text.split("\n")
           lines.each do |line|
             @lines.push(line) unless line == "" 
           end
+          puts "Memory 5th pass:"
+          puts `ps -o rss= -p #{$$}`
           FileUtils.rm "#{file_name}-#{counter}.jpg"
+          #img.destroy!
           counter += 1
-        end
+          #end
+        #page.destroy!
       end
       puts "#{@lines}"
     else
-      page = RTesseract.read("#{file_name}.jpg") do |img|
-        img = img.quantize(256,Magick::GRAYColorspace)
-        img = img.modulate(1.3)
-        img.write("#{file_name}.jpg")
-        #lines = e.lines_for("public/uploads/#{file_name}.jpg")
+      #page = RTesseract.read("#{file_name}.jpg") do |img|
+        #img = img.quantize(256,Magick::GRAYColorspace)
+        #img = img.modulate(1.3)
+        #img.write("#{file_name}.jpg")
+        puts "Memory 4th pass:"
+        puts `ps -o rss= -p #{$$}`
         text = RTesseract.new("#{file_name}.jpg", {psm: 6})
         text = text.to_s
         lines = text.split("\n")
         lines.each do |line|
           @lines.push(line) unless line == "" 
         end
+        puts "Memory 5th pass:"
+        puts `ps -o rss= -p #{$$}`
         FileUtils.rm "#{file_name}.jpg"
-      end
+        #img.destroy!
+        #end
+      #page.destroy!
       
     end
 
     amazon_template(@lines)
+    puts "Memory 6th pass:"
+    puts `ps -o rss= -p #{$$}`
     
     #mix_block = RTesseract::Mixed.new("public/uploads/#{file_name}.jpg") do |image|
     #  image.area(cordinate_x, cordinate_y, width, height)
     #end
 
     #content1 = mix_block.to_s
-
-    #%x(rm -Rf public/tessdir)
-    #contents = image.to_s
-    #@result = content1.first.gsub("\n", "<br />").html_safe
-    #@result2 = contents
   end
   
   def create_expense(date, vendor_id, bank_account_id, product_name, doc_number, total, items={})
@@ -321,7 +319,7 @@ class TesseractController < ApplicationController
     elsif digital_date_line
       @date = Date.parse(digital_date_line.split(':').last.strip)
     end
-    #create_expense(@date, 78, 42, "Amazon Purchase", @order_number, @total, @items)
+    create_expense(@date, 78, 42, "Amazon Purchase", @order_number, @total, @items)
     #render_response(true, "Upload succesfull", 200)
   end
   
