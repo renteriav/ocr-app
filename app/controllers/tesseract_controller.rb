@@ -17,16 +17,13 @@ class TesseractController < ApplicationController
     puts `ps -o rss= -p #{$$}`  
     @document = current_user.documents.build(image: params[:image], user_id: current_user.id)
     file_name = random_file_name
-    cordinate_x = params[:x_cordinate]
-    cordinate_y = params[:y_cordinate]
-    width = params[:width]
-    height = params[:height]
-    brightness = params[:brightness].to_i
     
-    (brightness < 220) ? brightness_increase = ((220 - brightness).to_f / 130) : brightness_increase = 0
-    increased_brightness = 1 + brightness_increase
+    #brightness = params[:brightness].to_i
+    
+    #(brightness < 220) ? brightness_increase = ((220 - brightness).to_f / 130) : brightness_increase = 0
+    #increased_brightness = 1 + brightness_increase
 
-    puts "#{params[:image].path}"
+    #puts "#{params[:image].path}"
    
     image = Magick::ImageList.new(params[:image].path) do
       self.quality = 100
@@ -61,8 +58,7 @@ class TesseractController < ApplicationController
           FileUtils.rm "#{file_name}-#{counter}.jpg"
           #img.destroy!
           counter += 1
-          #end
-        #page.destroy!
+        #end
       end
       puts "#{@lines}"
     else
@@ -82,12 +78,11 @@ class TesseractController < ApplicationController
         puts `ps -o rss= -p #{$$}`
         FileUtils.rm "#{file_name}.jpg"
         #img.destroy!
-        #end
-      #page.destroy!
-      
+      #end     
     end
 
     amazon_template(@lines)
+
     puts "Memory 6th pass:"
     puts `ps -o rss= -p #{$$}`
     
@@ -98,10 +93,8 @@ class TesseractController < ApplicationController
     #content1 = mix_block.to_s
   end
   
-  def create_expense(date, vendor_id, bank_account_id, product_name, doc_number, total, items={})
+  def create_expense(date, vendor_name, bank_account_id, product_name, doc_number, total, items={})
     @qbo_client = current_user.qbo_client
-    
-    entity_ref_id = vendor_id
 
     purchase = Quickbooks::Model::Purchase.new
     service = Quickbooks::Service::Purchase.new
@@ -109,7 +102,7 @@ class TesseractController < ApplicationController
     service.company_id = @qbo_client.realm_id
     
     products = get_items
-    existing_products = products.select {|product| product[:product].downcase == product_name.downcase}
+    existing_products = products.select {|product| product[:name].downcase == product_name.downcase}
     if existing_products.any?
       item_ref = Quickbooks::Model::BaseReference.new(existing_products.first[:id])
     else
@@ -117,6 +110,19 @@ class TesseractController < ApplicationController
       new_product = {product: @created_item.name, id: @created_item.id}
       item_ref = Quickbooks::Model::BaseReference.new(@created_item.id)
     end
+    
+    vendors = get_vendors
+    existing_vendors = vendors.select {|vendor| vendor[:name].downcase == vendor_name.downcase}
+    if existing_vendors.any?
+      entity_ref_id = existing_vendors.first[:id]
+    else
+      create_vendor(vendor_name)
+      new_vendor = {name: @created_vendor.display_name, id: @created_vendor.id}
+      entity_ref_id = @created_vendor.id
+    end
+    
+    accounts = get_bank_accounts
+    bank_account_id = accounts.first[:id]
     
     items.each do |item|
       line_item = Quickbooks::Model::PurchaseLineItem.new
@@ -156,8 +162,10 @@ class TesseractController < ApplicationController
       vendor = vendor_service.fetch_by_id(entity_ref_id)
       file_name = "#{vendor.display_name}-#{date}" 
       upload(@id, "Purchase", file_name)
+      puts "Upload succesful"
       render_response(true, "Upload succesfull", 200)
     else 
+      puts "Upload unsuccesful"
       render_response(false, "something went wrong", 500)
     end
   end
@@ -319,7 +327,7 @@ class TesseractController < ApplicationController
     elsif digital_date_line
       @date = Date.parse(digital_date_line.split(':').last.strip)
     end
-    create_expense(@date, 78, 42, "Amazon Purchase", @order_number, @total, @items)
+    create_expense(@date, "Amazon", 42, "Amazon Purchase", @order_number, @total, @items)
     #render_response(true, "Upload succesfull", 200)
   end
   
@@ -339,7 +347,24 @@ class TesseractController < ApplicationController
     if @created_item = service.create(item)
       puts "item created"
     else
-      puts "item not created-- id : @created_item.id"
+      puts "item not created"
+    end
+  end
+  
+  def create_vendor(name)
+    @qbo_client = current_user.qbo_client
+
+    vendor = Quickbooks::Model::Vendor.new
+    service = Quickbooks::Service::Vendor.new
+    service.access_token = set_qb_service
+    service.company_id = @qbo_client.realm_id
+
+    vendor.display_name = name
+
+    if @created_vendor = service.create(vendor)
+      puts "vendor created"
+    else 
+      puts "vendor not created"
     end
   end
   
@@ -382,10 +407,47 @@ class TesseractController < ApplicationController
     items_entries = items.entries
     items_array = Array.new
     items_entries.each do |item|
-      entry = {product: item.name, id: item.id.to_i}
-    items_array.push(entry)
+      entry = {name: item.name, id: item.id.to_i}
+      items_array.push(entry)
     end
     return items_array
+  end
+  
+  def get_vendors
+    @qbo_client = current_user.qbo_client
+    service = Quickbooks::Service::Vendor.new
+    service.access_token = set_qb_service
+    service.company_id = @qbo_client.realm_id
+
+    vendors = service.query(nil, :page => 1, :per_page => 500)
+    vendors_entries = vendors.entries
+    vendors = Array.new
+    vendors_entries.each do |vendor|
+      entry = {name: vendor.display_name, id: vendor.id.to_i}
+      vendors.push(entry)
+    end   
+    return vendors
+  end
+  
+  def get_bank_accounts
+    @qbo_client = current_user.qbo_client
+    service = Quickbooks::Service::Account.new
+    service.access_token = set_qb_service
+    service.company_id = @qbo_client.realm_id
+
+    accounts = service.query(nil, :page => 1, :per_page => 500)
+    @accounts = accounts.entries
+    @expense_categories = Hash.new
+    bank_accounts = Array.new
+    @accounts.each do |acc|
+      if acc.account_type
+        if acc.account_type.downcase == "bank" || acc.account_type.downcase == "credit card"
+          entry = {name: acc.name, id: acc.id.to_i}
+          bank_accounts.push(entry)
+        end   
+      end
+    end
+    return bank_accounts
   end
   
   def set_qb_service
