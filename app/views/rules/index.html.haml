@@ -1,0 +1,11 @@
+%br
+%br
+.container
+  .row
+    .col-sm-10.col-sm-offset-1
+      =#form_for @document, url: tesseract_run_path(document: @document), via: :post, authenticity_token: true, html: {:multipart => true, :remote => true, class: "dropzon dz-square", id: "dropzone-form"} do |f|
+      =form_tag({action: :import_rules}, multipart: true, class: "dropzon dz-square", id: "dropzone-form") do
+        .form-group
+          =file_field_tag 'document'
+        .form-group
+          =submit_tag "Get Text"

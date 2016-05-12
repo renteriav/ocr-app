@@ -1,7 +1,7 @@
 %p
   %strong
     Date:
-  ="#{@date.strftime('%Y-%m-%d')}"
+  ="#{@date.strftime('%Y-%m-%d')}" unless @date.nil?
 %p
   %strong
     Order #:

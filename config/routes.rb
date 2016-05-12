@@ -1,9 +1,18 @@
 Rails.application.routes.draw do
   devise_for :users
+  #root to: 'pro_advisors#sheet_upload'
   root to: 'tesseract#index'
   get "tesseract/uploader", to: 'tesseract#uploader'
   get "tesseract/image", to: 'tesseract#image'
   match "tesseract/run", to: 'tesseract#run', via: [:post, :get]
+  
+  get "rules", to: 'rules#index'
+  match "rules/import_rules", to: 'rules#import_rules', via: [:post, :get]
+  
+  get "pro_advisors/sheet_upload", to: 'pro_advisors#sheet_upload'
+  match "pro_advisors/import_advisors", to: 'pro_advisors#import_advisors', via: [:post, :get]
+  get "pro_advisors/generate_csv", to: 'pro_advisors#generate_csv'
+  resources :pro_advisors
   
   #quickbooks api 
   scope :quickbooks do

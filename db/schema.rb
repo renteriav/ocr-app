@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151014172753) do
+ActiveRecord::Schema.define(version: 20151211170359) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,6 +21,20 @@ ActiveRecord::Schema.define(version: 20151014172753) do
     t.string   "image"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "pro_advisors", force: :cascade do |t|
+    t.string   "first"
+    t.string   "last"
+    t.string   "company_name"
+    t.string   "email"
+    t.string   "phone"
+    t.string   "address"
+    t.string   "city"
+    t.string   "state"
+    t.string   "zip_code"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
   create_table "qbo_clients", force: :cascade do |t|
@@ -35,6 +49,27 @@ ActiveRecord::Schema.define(version: 20151014172753) do
   end
 
   add_index "qbo_clients", ["realm_id"], name: "index_qbo_clients_on_realm_id", unique: true, using: :btree
+
+  create_table "rule_details", force: :cascade do |t|
+    t.integer  "rule_id"
+    t.integer  "code"
+    t.string   "value"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "rules", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "name"
+    t.boolean  "is_qb_rule"
+    t.boolean  "is_and_rule"
+    t.string   "memo"
+    t.string   "payee"
+    t.string   "category"
+    t.integer  "transfer_account_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
